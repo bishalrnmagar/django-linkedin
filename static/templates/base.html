@@ -6,11 +6,34 @@
         <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     </head>
-
     <body>
-      <nav class='navbar navbar-dark bg-light'> 
-        <div class="mx-auto">
-            <p class="fs-1 text-black">Notes App</p>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+          <a class="navbar-brand" href="{% url 'notes.all' %}">
+            NotesApp
+          </a>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+              {% if user.is_authenticated %}
+                <li class="nav-item mx-3">
+                  <a class="nav-link" href="{% url 'notes.create' %}">Add Notes</a>
+                </li>
+                <div class="m-auto">
+                  <span class="text-center">Hello, {{ user.username }}</span>
+                </div>
+                <li class="nav-item mx-3">
+                  <a class="nav-link btn-danger text-light rounded" href="{% url 'user.logout' %}">Signout</a>
+                </li>
+              {% else %}
+                <li class="nav-item mx-3">
+                  <a class="nav-link btn-primary text-light rounded" href="{% url 'user.login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link btn-primary text-light rounded" href="{% url 'user.register' %}">Register</a>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
         </div>
       </nav>
       <div class="container"> 
