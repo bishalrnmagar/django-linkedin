@@ -18,9 +18,6 @@
                 <li class="nav-item mx-3">
                   <a class="nav-link" href="{% url 'notes.create' %}">Add Notes</a>
                 </li>
-                <div class="m-auto">
-                  <span class="text-center">Hello, {{ user.username }}</span>
-                </div>
                 <li class="nav-item mx-3">
                   <a class="nav-link btn-danger text-light rounded" href="{% url 'user.logout' %}">Signout</a>
                 </li>
@@ -37,6 +34,13 @@
         </div>
       </nav>
       <div class="container"> 
+        <div class="container">
+          {% if user.is_authenticated %}
+            <div class="m-auto">
+              <h1 class="text-start">Hello, {{ user.username }}</h1>
+            </div>
+          {% endif %}
+        </div>
         {% block content %}
         {% endblock %}
       </div>

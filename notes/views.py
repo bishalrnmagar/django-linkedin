@@ -7,16 +7,18 @@ from django.contrib.auth.decorators import login_required
 from .models import Notes
 from .forms import NotesForm
 
-def get(model: models, pk=None):
+def get(model: models, pk=None, user=None):
+    queryset = model.objects.filter(is_deleted=False, user=user)
     if pk is not None:
-        return get_object_or_404(model, id=pk)
-    return get_list_or_404(model)
+        queryset = model.objects.filter(id=pk, is_deleted=False, user=user)
+        return get_object_or_404(queryset)
+    if queryset is None:
+        raise Http404("Resource not found")
+    return get_list_or_404(queryset)
 
 @login_required(login_url='user.login')
 def get_notes(request):
-    notes = get(Notes)
-    user = request.user
-    notes = [note for note in notes if note.user == user]
+    notes = get(Notes, user=request.user)
     return render(request, 'notes/index.html', {'notes': notes})
 
 @login_required(login_url='user.login')
@@ -35,32 +37,27 @@ def create_note(request):
 
 @login_required(login_url='user.login')
 def get_notes_by_id(request, pk):
-    note = get(Notes, pk=pk)
-    if note.user == request.user:
+    note = get(Notes, pk=pk, user=request.user)
+    try: 
         return render(request, 'notes/detail.html', {'note': note})
-    else:
+    except Http404 as e:
         raise Http404("Requested resource not available")
 
 @login_required(login_url='user.login')
 def update_notes_by_id(request, pk):
     form = NotesForm
-    instance = get(Notes, pk)  
-    if instance.user == request.user:
-        form = NotesForm(instance=instance)
-        if request.method == 'POST':
-            form = NotesForm(request.POST, instance=instance)
-            if form.is_valid():
-                form.save()
-                return redirect(reverse('notes.detail', kwargs={'pk': pk}))
-    else:
-        raise Http404("Request resource not available")
+    instance = get(Notes, pk=pk, user=request.user)  
+    if request.method == 'POST':
+        form = NotesForm(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('notes.detail', kwargs={'pk': pk}))
     return render(request, 'notes/form.html', {'form': form})
 
 @login_required(login_url='user.login')
 def delete_notes_by_id(request, pk):
-    instance = get(Notes, pk=pk)
-    if instance.user == request.user:
-        instance.delete()
-        return redirect(reverse('notes.all'))
-    else:
-        raise Http404("Request resource not available")
+    instance = get(Notes, pk=pk, user=request.user)
+    instance.is_deleted = True
+    instance.save()
+    return redirect(reverse('notes.all'))
+    

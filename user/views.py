@@ -23,7 +23,6 @@ def user_login(request):
     else:
         if request.method == 'POST':
             form = LoginForm(data=request.POST)
-            print(request.POST)
             if form.is_valid():
                 username = form.cleaned_data['username']
                 password = form.cleaned_data['password']
