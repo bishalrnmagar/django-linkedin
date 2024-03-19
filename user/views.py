@@ -14,7 +14,12 @@ def register(request):
             form = UserCreationForm(request.POST)
             if form.is_valid():
                 form.save()
-                return redirect('user.login')
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password1']
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    login(request=request, user=user)
+                    return redirect('notes.all')
     return render(request, 'user/form.html',{'form': form})
 
 def user_login(request):

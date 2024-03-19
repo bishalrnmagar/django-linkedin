@@ -8,15 +8,14 @@ from .models import Notes
 from .forms import NotesForm
 
 def get(model: models, pk=None, user=None):
-    queryset = model.objects.filter(is_deleted=False, user=user)
-    obj = get_list_or_404(queryset)
+    queryset = model.objects.filter(user=user, is_deleted=False)
     if pk is not None:
         queryset = model.objects.filter(id=pk, is_deleted=False, user=user)
         obj = get_object_or_404(queryset)
         return obj
     if queryset is None:
-        raise Http404("Resource not found")
-    return obj
+        return model()
+    return queryset
 
 @login_required(login_url='user.login')
 def get_notes(request):
