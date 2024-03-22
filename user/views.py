@@ -6,21 +6,23 @@ from .forms import LoginForm, RegisterForm
 
 def register(request):
     form = RegisterForm
+    errors = {}
     if request.user.is_authenticated:
         return redirect(reverse('notes.all'))
     else:
         if request.method == 'POST':
-            # form = RegisterForm(request.POST)
-            print(request.POST)
-    #         if form.is_valid():
-    #             form.save()
-    #             username = form.cleaned_data['username']
-    #             password = form.cleaned_data['password1']
-    #             user = authenticate(username=username, password=password)
-    #             if user is not None:
-    #                 login(request=request, user=user)
-    #                 return redirect('notes.all')
-    return render(request, 'user/form.html',{'form': form})
+            form = RegisterForm(request.POST)
+            if form.is_valid():
+                form.save()
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password1']
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    login(request=request, user=user)
+                    return redirect('notes.all')
+            errors = form.error_messages
+            print(errors)
+    return render(request, 'user/form.html',{'form': form, 'errors': errors})
 
 def user_login(request):
     if request.user.is_authenticated:

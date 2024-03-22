@@ -1,16 +1,19 @@
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, BaseUserCreationForm
 from django import forms
+from django.contrib.auth import get_user_model
+
+CustomUser = get_user_model()
 
 class LoginForm(AuthenticationForm):
     pass
 
-class RegisterForm(UserCreationForm):
+class RegisterForm(BaseUserCreationForm):
+    class Meta:
+        model = CustomUser
+        fields = ('username',)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['password2'].widget = forms.HiddenInput()
-        self.fields['password2'].label = ''
 
-    def clean(self):
-        cleaned_data = super().clean()
-        cleaned_data['password2'] = cleaned_data['password1']
-        return cleaned_data
+    
+
