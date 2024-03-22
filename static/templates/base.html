@@ -36,7 +36,8 @@
       <div class="container"> 
         <div class="container">
           {% if user.is_authenticated %}
-            <div class="m-auto">
+            <div class="flex m-auto">
+              <img src="{{ user.profile_img }}" alt="" style="width: 100px; height: 100px; border-radius: 50%; ">
               <h1 class="text-start">Hello, {{ user.username }}</h1>
             </div>
           {% endif %}

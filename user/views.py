@@ -1,25 +1,25 @@
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, authenticate, login
-from django.contrib.auth.forms import UserCreationForm
 
-from .forms import LoginForm
+from .forms import LoginForm, RegisterForm
 
 def register(request):
-    form = UserCreationForm
+    form = RegisterForm
     if request.user.is_authenticated:
         return redirect(reverse('notes.all'))
     else:
         if request.method == 'POST':
-            form = UserCreationForm(request.POST)
-            if form.is_valid():
-                form.save()
-                username = form.cleaned_data['username']
-                password = form.cleaned_data['password1']
-                user = authenticate(username=username, password=password)
-                if user is not None:
-                    login(request=request, user=user)
-                    return redirect('notes.all')
+            # form = RegisterForm(request.POST)
+            print(request.POST)
+    #         if form.is_valid():
+    #             form.save()
+    #             username = form.cleaned_data['username']
+    #             password = form.cleaned_data['password1']
+    #             user = authenticate(username=username, password=password)
+    #             if user is not None:
+    #                 login(request=request, user=user)
+    #                 return redirect('notes.all')
     return render(request, 'user/form.html',{'form': form})
 
 def user_login(request):
