@@ -1,20 +1,48 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="row row-cols-4">
-        {% for note in notes %}
-        <div class="col-md-4">
-            <div class="card" style="width: 18rem;">
-                <img src="https://placehold.co/400x400/png" class="card-img-top m-0" alt="...">
-                <div class="card-body">
-                    <div>
-                        <h3 class="card-title">{{ note.title|truncatechars:15 }}</h3>
+<div>
+    <div>
+        {% if notes %}
+            <h1 class="div-header">My Notes</h1>
+        {% endif %}
+        <div class="row row-cols-4">
+            {% for note in notes %}
+            <div class="col-md-4">
+                <div class="card" style="width: 18rem;">
+                    <img src="https://placehold.co/400x400/png" class="card-img-top m-0" alt="...">
+                    <div class="card-body">
+                        <div>
+                            <h3 class="card-title">{{ note.title|truncatechars:15 }}</h3>
+                        </div>
+                        <span class="card-text text-secondary">{{ note.description|truncatechars:20 }}</span>
                     </div>
-                    <span class="card-text text-secondary">{{ note.description|truncatechars:20 }}</span>
-                </div>
-                <a href="{% url 'notes.detail' pk=note.id %}" class="btn btn-primary">View</a>
-            </div>   
-        </div> 
-        {% endfor %}
+                    <a href="{% url 'notes.detail' pk=note.id %}" class="btn btn-primary">View</a>
+                </div>   
+            </div> 
+            {% endfor %}
+        </div>    
+    </div>
+    <div style="height: 100px;"></div>
+    <div>
+        {% if public_notes %}
+            <h1 class="div-header">Public Notes</h1>
+        {% endif %}        <div class="row row-cols-4">
+            {% for note in public_notes %}
+            <div class="col-md-4">
+                <div class="card" style="width: 18rem;">
+                    <img src="https://placehold.co/400x400/png" class="card-img-top m-0" alt="...">
+                    <div class="card-body">
+                        <div>
+                            <h3 class="card-title">{{ note.title|truncatechars:15 }}</h3>
+                        </div>
+                        <span class="card-text text-secondary">{{ note.description|truncatechars:20 }}</span>
+                    </div>
+                    <!-- <a href="{% url 'public.notes.detail' pk=note.id %}" class="btn btn-primary">View</a> -->
+                </div>   
+            </div> 
+            {% endfor %}
+        </div>
     </div>    
+</div>
 {% endblock %}

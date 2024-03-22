@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import AuthenticationForm, BaseUserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, BaseUserCreationForm, UserChangeForm
 from django import forms
 from django.contrib.auth import get_user_model
 
@@ -15,5 +15,8 @@ class RegisterForm(BaseUserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ('profile_img',)
 

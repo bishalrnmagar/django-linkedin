@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth.decorators import login_required
 
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, ProfileForm
 
 def register(request):
     form = RegisterForm
@@ -43,3 +44,13 @@ def user_login(request):
 def sign_out(request):
     logout(request)
     return redirect('user.login')
+
+@login_required(login_url='user.login')
+def update_profile(request):
+    form = ProfileForm
+    if request.method == 'POST':
+        form = ProfileForm(data=request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('notes.all'))
+    return render(request, 'user/form.html', {'form': form})

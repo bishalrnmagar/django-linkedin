@@ -20,7 +20,8 @@ def get(model: models, pk=None, user=None):
 @login_required(login_url='user.login')
 def get_notes(request):
     notes = get(Notes, user=request.user)
-    return render(request, 'notes/index.html', {'notes': notes})
+    public_notes = Notes.objects.filter(is_deleted=False, visibility='public')
+    return render(request, 'notes/index.html', {'notes': notes, 'public_notes': public_notes})
 
 @login_required(login_url='user.login')
 def create_note(request):
@@ -45,9 +46,17 @@ def get_notes_by_id(request, pk):
         raise Http404("Requested resource not available")
 
 @login_required(login_url='user.login')
+def get_public_notes_by_id(request, pk):
+    note = Notes.objects.filter(id=pk,visibility='public',is_deleted=False)
+    try: 
+        return render(request, 'notes/detail.html', {'note': note})
+    except Http404 as e:
+        raise Http404("Requested resource not available")
+
+@login_required(login_url='user.login')
 def update_notes_by_id(request, pk):
-    form = NotesForm
     instance = get(Notes, pk=pk, user=request.user)  
+    form = NotesForm(instance=instance)
     if request.method == 'POST':
         form = NotesForm(request.POST, instance=instance)
         if form.is_valid():

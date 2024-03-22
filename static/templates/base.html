@@ -38,7 +38,7 @@
           {% if user.is_authenticated %}
             <div class="flex m-auto">
               <img src="{{ user.profile_img }}" alt="" style="width: 100px; height: 100px; border-radius: 50%; ">
-              <h1 class="text-start">Hello, {{ user.username }}</h1>
+              <a class="text-start text-decoration-none text-black" href="{% url 'user.profile' %}">Hello, {{ user.username }}</a>
             </div>
           {% endif %}
         </div>
