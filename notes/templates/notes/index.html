@@ -27,7 +27,8 @@
     <div>
         {% if public_notes %}
             <h1 class="div-header">Public Notes</h1>
-        {% endif %}        <div class="row row-cols-4">
+        {% endif %}        
+        <div class="row row-cols-4">
             {% for note in public_notes %}
             <div class="col-md-4">
                 <div class="card" style="width: 18rem;">
@@ -38,7 +39,7 @@
                         </div>
                         <span class="card-text text-secondary">{{ note.description|truncatechars:20 }}</span>
                     </div>
-                    <!-- <a href="{% url 'public.notes.detail' pk=note.id %}" class="btn btn-primary">View</a> -->
+                    <a href="{% url 'public.notes.detail' pk=note.id %}" class="btn btn-primary">View</a>
                 </div>   
             </div> 
             {% endfor %}

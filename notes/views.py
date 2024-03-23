@@ -20,7 +20,7 @@ def get(model: models, pk=None, user=None):
 @login_required(login_url='user.login')
 def get_notes(request):
     notes = get(Notes, user=request.user)
-    public_notes = Notes.objects.filter(is_deleted=False, visibility='public')
+    public_notes = Notes.objects.filter(is_deleted=False, visibility='public').exclude(user=request.user)
     return render(request, 'notes/index.html', {'notes': notes, 'public_notes': public_notes})
 
 @login_required(login_url='user.login')
@@ -40,16 +40,19 @@ def create_note(request):
 @login_required(login_url='user.login')
 def get_notes_by_id(request, pk):
     note = get(Notes, pk=pk, user=request.user)
+    isEditable, isDeletable = True, True
     try: 
-        return render(request, 'notes/detail.html', {'note': note})
+        return render(request, 'notes/detail.html', {'note': note, 'isEditable': isEditable, 'isDeletable': isDeletable})
     except Http404 as e:
         raise Http404("Requested resource not available")
 
 @login_required(login_url='user.login')
 def get_public_notes_by_id(request, pk):
-    note = Notes.objects.filter(id=pk,visibility='public',is_deleted=False)
+    print(request, "pk -> ", pk)
+    note = Notes.objects.get(visibility='public',is_deleted=False, pk=pk)
+    isEditable, isDeletable = False, False
     try: 
-        return render(request, 'notes/detail.html', {'note': note})
+        return render(request, 'notes/detail.html', {'note': note, 'isEditable': isEditable, 'isDeletable': isDeletable})
     except Http404 as e:
         raise Http404("Requested resource not available")
 

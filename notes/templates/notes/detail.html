@@ -7,8 +7,12 @@
             <span class="text-secondary">Visibility: {{ note.visibility|capfirst }}</span> <br>
             <span class="text-secondary">Published: {{ note.created_at|date:"M d, Y" }}</span>
         </div>
-        <p>{{ note.description }}</p>
-        <!-- <a href="{% url 'notes.edit' pk=note.id %}" class="btn btn-primary">Edit</a> -->
-        <!-- <a href="{% url 'notes.delete' pk=note.id %}" class="btn btn-danger">Delete</a> -->
+        <p>{{ note.description  }}</p>
+        {% if note.isEditable == True %}
+            <a href="{% url 'notes.edit' pk=note.id %}" class="btn btn-primary">Edit</a>
+        {% endif %}
+        {% if note.isDeletable == True %}
+            <a href="{% url 'notes.delete' pk=note.id %}" class="btn btn-danger">Delete</a>
+        {% endif %}
     </div>
 {% endblock %} 
